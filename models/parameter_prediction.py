@@ -167,7 +167,7 @@ class SparseDepthPrediction(nn.Module):
         # uncomment for random sampling, or poisson disk sampling instaed of the adaptive sampling
         # this should only be used for benchmarking, note we hack the samplesH variable to represent the
         # number of samples or the radius of the poisson disc sampling
-        # sparse = utils.generate_poissondisk_mask(r=17.6).float().to(self.device) * batch_data['gt']
+        # sparse = utils.generate_poissondisk_mask(r=17.6, dataset=self.dataset).float().to(self.device) * batch_data['gt']
         # sparse = utils.generate_random_mask_kitti(samplesH).float().to(self.device) * batch_data['gt']
 
         if not self.training and self.dataset == 'kitti':
