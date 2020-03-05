@@ -118,13 +118,21 @@ parser.add_argument('--refinement_model_kitti',
                        # + 'model_best_156.pth.tar',
                        + 'model_best_512.pth.tar',
                        # + 'model_best_156_130prox.pth.tar',
-                    help='path to bilateral filter proxy')
+                    help='path to refinement model on kitti data')
 parser.add_argument('--refinement_model_nyu',
                     type=str,
                     default='/media/data2/awb/adaptive-scanning/'
                        + 'results_refinement_final/final_models/'
                        + 'data-nyu_v2.samples-50.pth.tar',
-                    help='path to bilateral filter proxy')
+                    help='path to refinement model on nyu data')
+parser.add_argument('--data_directory_nyu',
+                    type=str,
+                    default='/media/data2/awb/nyu_v2/densedepth/nyu_data_wonka.zip',
+                    help='directory containing the data')
+parser.add_argument('--data_directory_kitti',
+                    type=str,
+                    default='/media/data2/awb/kitti/inpainted',
+                    help='directory containing the data')
 args = parser.parse_args()
 
 current_time = time.strftime('%Y-%m-%d@%H-%M')
@@ -413,13 +421,15 @@ def main(args, device):
     if args.dataset == 'kitti':
         train_loader, val_loader = GetKittiData(batch_size=args.batch_size,
                                                 samples=0,
-                                                sampling_method='u_r')
+                                                sampling_method='u_r',
+                                                data_directory=args.data_directory_kitti)
         print("train loader size: {}".format(len(train_loader)))
         print("val loader size: {}".format(len(val_loader)))
     elif args.dataset == 'nyu_v2':
         train_loader, val_loader = GetNYUV2Data(batch_size=args.batch_size,
                                                 samples=0,
-                                                sampling_method='u_r')
+                                                sampling_method='u_r',
+                                                data_directory=args.data_directory_nyu)
         print("train loader size: {}".format(len(train_loader)))
         print("val loader size: {}".format(len(val_loader)))
     else:

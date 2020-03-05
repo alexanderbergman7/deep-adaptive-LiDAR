@@ -77,7 +77,6 @@ parser.add_argument('--eval_only',
                     help='evaluate only')
 
 # existing model parameters
-
 parser.add_argument('--monocular_depth_model_nyu',
                     type=str,
                     default='/home/awb/adaptive-scanning/model/densedepth/'
@@ -98,6 +97,15 @@ parser.add_argument('--bilat_proxy_model_kitti',
                     default='/home/awb/adaptive-scanning/model/bilateral_proxy/'
                        + '512_fullkitti_depthdomain_best.pth.tar',
                     help='path to bilateral filter proxy')
+parser.add_argument('--data_directory_nyu',
+                    type=str,
+                    default='/media/data2/awb/nyu_v2/densedepth/nyu_data_wonka.zip',
+                    help='directory containing the kitti data')
+parser.add_argument('--data_directory_kitti',
+                    type=str,
+                    default='/media/data2/awb/kitti/' \
+                            'sparse-to-dense/self-supervised-depth-completion/data',
+                    help='directory containing the nyu v2 data')
 args = parser.parse_args()
 
 if args.sampling_method == "none":
@@ -303,14 +311,16 @@ def main():
         train_loader, val_loader = GetKittiData(batch_size=args.batch_size,
                                                 samples=args.samples,
                                                 sampling_method=
-                                                args.sampling_method)
+                                                args.sampling_method,
+                                                data_directory=args.data_directory)
         print("train loader size: {}".format(len(train_loader)))
         print("val loader size: {}".format(len(val_loader)))
     elif args.dataset == 'nyu_v2':
         train_loader, val_loader = GetNYUV2Data(batch_size=args.batch_size,
                                                 samples=args.samples,
                                                 sampling_method=
-                                                args.sampling_method)
+                                                args.sampling_method,
+                                                data_directory=args.data_directory)
         print("train loader size: {}".format(len(train_loader)))
         print("val loader size: {}".format(len(val_loader)))
     else:
