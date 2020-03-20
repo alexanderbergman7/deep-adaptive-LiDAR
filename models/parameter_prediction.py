@@ -53,12 +53,18 @@ class SparseDepthPrediction(nn.Module):
 
         dense_vector_field = self.UNET(monocular_features)
 
-        if self.training:
+        if self.training and self.dataset == 'kitti':
             samplesH = self.samplesH + random.randint(-3,3)
             samplesW = self.samplesW + random.randint(-9,9)
-        else:
+        elif self.training and self.dataset == 'nyu_v2':
+            samplesH = self.samplesH + random.randint(-2,2)
+            samplesW = self.samplesW + random.randint(-3,3)
+        elif self.dataset == 'kitti':
             samplesH = self.samplesH + random.randint(-1,1)
             samplesW = self.samplesW + random.randint(-3,3)
+        else:
+            samplesH = self.samplesH + random.randint(-1,1)
+            samplesW = self.samplesW + random.randint(-1,1)
 
         # smoothing the vector field and then downsampling (based on nearest neighbor) is equivalent
         # to the vector at acoordinate being the sum of the nearby pixels
