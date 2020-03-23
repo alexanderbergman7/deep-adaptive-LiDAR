@@ -333,16 +333,19 @@ def main(args, device):
         as_model = SparseDepthPrediction(args.samples_height, args.samples_width,
                                       (args.batch_size, 1, 352, 1216),
                                       device=device, dataset=args.dataset, ret_samples=args.ret_samples)
+        depthcomp = DepthCompletionNet()
     elif args.dataset == 'nyu_v2':
         as_model = SparseDepthPrediction(args.samples_height, args.samples_width,
                                       (args.batch_size, 1, 240, 320),
                                       device=device, dataset=args.dataset, ret_samples=args.ret_samples)
+        depthcomp = Refinement()
 
     if args.adaptive_sampling_only_train:
         optimizer = torch.optim.Adam(as_model.parameters(), lr=args.lr)
 
         if checkpoint is not None:
             as_model.load_state_dict(checkpoint['model'])
+            depthcomp.load_state_dict(checkpoint['dc_model'])
             optimizer.load_state_dict(checkpoint['optimizer'])
             scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=2,
                                                         gamma=args.lr_decay,
@@ -372,10 +375,10 @@ def main(args, device):
                        map_location=device))
         mdn.to(device)
         mdn.eval()
-        depthcomp = DepthCompletionNet()
-        depthcomp.load_state_dict(
-            torch.load(args.refinement_model_kitti,
-                       map_location=device)['model'])
+        if checkpoint is None:
+            depthcomp.load_state_dict(
+                torch.load(args.refinement_model_kitti,
+                           map_location=device)['model'])
         depthcomp.to(device)
         depthcomp.eval()
     elif args.dataset =='nyu_v2':
@@ -392,10 +395,10 @@ def main(args, device):
                        map_location=device))
         mdn.to(device)
         mdn.eval()
-        depthcomp = Refinement()
-        depthcomp.load_state_dict(
-            torch.load(args.refinement_model_nyu,
-                       map_location=device)['model'])
+        if checkpoint is None:
+            depthcomp.load_state_dict(
+                torch.load(args.refinement_model_nyu,
+                           map_location=device)['model'])
 
         depthcomp.to(device)
         depthcomp.eval()
@@ -412,9 +415,9 @@ def main(args, device):
                                                     gamma=args.lr_decay)
 
     # uncomment for multiple GPU training, manually specify remaining GPUs
-    # model = torch.nn.DataParallel(model, device_ids=[args.gpu, 9])
-    # bprox = torch.nn.DataParallel(bprox, device_ids=[args.gpu, 9])
-    # mdn = torch.nn.DataParallel(mdn, device_ids=[args.gpu, 9])
+    # as_model = torch.nn.DataParallel(as_model, device_ids=[args.gpu, 2])
+    # bprox = torch.nn.DataParallel(bprox, device_ids=[args.gpu, 2])
+    # mdn = torch.nn.DataParallel(mdn, device_ids=[args.gpu, 2])
     models = (as_model, bprox, mdn, depthcomp)
 
     print("creating data loaders")
