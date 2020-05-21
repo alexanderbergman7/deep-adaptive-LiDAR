@@ -1,6 +1,6 @@
 # Deep Adaptive LiDAR: End-to-end Optimization of Sampling and Depth Completion at Low Sampling Rates
 
-### [Project Page](http://www.computationalimaging.org/publications/deep-adaptive-lidar/) | [Paper](http://www.computationalimaging.org/wp-content/uploads/2020/03/deep-adaptive-lidar.pdf) | [Presentation (@32:00)](https://www.youtube.com/watch?v=9WAz9Y9gXgM&feature=youtu.be) ###
+### [Project Page](http://www.computationalimaging.org/publications/deep-adaptive-lidar/) | [Paper](http://www.computationalimaging.org/wp-content/uploads/2020/03/deep-adaptive-lidar.pdf) | [Presentation (@31:45)](https://www.youtube.com/watch?v=9WAz9Y9gXgM&feature=youtu.be) ###
 
 This repository contains the code associated with the paper Deep Adaptive LiDAR: End-to-end Optimization of Sampling and Depth Completion at Low Sampling Rates. Here, we propose an adaptive sampling scheme for LiDAR systems that demonstrates state-of-the-art performance for depth completion at low sampling rates. Our system is fully differentiable, allowing the sparse depth sampling and the depth inpainting components to be trained end-to-end with an upstream task.
 
